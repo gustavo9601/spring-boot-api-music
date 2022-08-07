@@ -4,6 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "albums")
@@ -17,6 +18,16 @@ public class Album {
     private Date lanzado;
     private Double precio;
     private String genero;
+
+    @OneToOne // un album tiene un detalle
+    @JoinColumn(name = "detalle_id") // llave foranea en esta tabla para relacionar las tablas
+    private Detalle detalle;
+
+
+    // mappedBy = "album" // nombre del atributo en la clase que se relaciona
+    @Transient
+    @OneToMany(mappedBy = "album", fetch = FetchType.EAGER) // un album tiene muchos horarios
+    private List<Horario> horarios;
 
     public Album() {
     }
@@ -69,6 +80,22 @@ public class Album {
         this.genero = genero;
     }
 
+    public Detalle getDetalle() {
+        return detalle;
+    }
+
+    public void setDetalle(Detalle detalle) {
+        this.detalle = detalle;
+    }
+
+    public List<Horario> getHorarios() {
+        return horarios;
+    }
+
+    public void setHorarios(List<Horario> horarios) {
+        this.horarios = horarios;
+    }
+
     @Override
     public String toString() {
         return "Album{" +
@@ -77,6 +104,7 @@ public class Album {
                 ", lanzado=" + lanzado +
                 ", precio=" + precio +
                 ", genero='" + genero + '\'' +
+                ", detalle='" + this.detalle + '\'' +
                 '}';
     }
 }
